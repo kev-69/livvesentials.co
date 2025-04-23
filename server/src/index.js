@@ -9,6 +9,7 @@ const sequelize = require('./config/db');
 
 // call routes here
 const authRoutes = require('./routes/auth-routes/auth-routes');
+const userRoutes = require('./routes/user-routes/user-routes')
 
 const app = exress();
 const PORT = process.env.PORT || 5000;
@@ -28,6 +29,7 @@ app.use(morgan('dev'));
 
 // import routes here
 app.use('/api/auth', authRoutes);
+app.use('/api/user', userRoutes);
 
 // error handler middleware
 app.use(errorHandler)
