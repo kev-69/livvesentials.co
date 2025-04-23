@@ -36,16 +36,16 @@ const validateEmail = (req, res, next) => {
 }
 
 const validatePassword = (req, res, next) => {
-    const { newPassword } = req.body;
+    const { password } = req.body;
 
-    if (!newPassword || newPassword.length < 8) {
+    if (!password || password.length < 8) {
         return res.status(400).json({ error: 'Password must be at least 8 characters long.' });
     }
 
-    const hasUpperCase = /[A-Z]/.test(newPassword);
-    const hasLowerCase = /[a-z]/.test(newPassword);
-    const hasNumber = /\d/.test(newPassword);
-    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(newPassword);
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasLowerCase = /[a-z]/.test(password);
+    const hasNumber = /\d/.test(password);
+    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
 
     if (!hasUpperCase) {
         return res.status(400).json({ error: 'Password must contain at least one uppercase letter.' });
