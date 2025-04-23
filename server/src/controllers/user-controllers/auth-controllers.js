@@ -23,7 +23,7 @@ const registerUser = async (req, res) => {
     const { firstName, lastName, email, password, phone } = req.body
     try {
         // Check if user already exists
-        const existingUser = await User.findByPk({ where: { email } });
+        const existingUser = await User.findOne({ where: { email } });
         if (existingUser) {
             return res.status(400).json({ message: 'User already exists' });
         }
@@ -61,7 +61,7 @@ const loginUser = async (req, res) => {
     const { email, password } = req.body
     try {
         // Check if user exists
-        const user = await User.findByPk({ where: { email } });
+        const user = await User.findOne({ where: { email } });
         if (!user) {
             return res.status(400).json({ message: 'Invalid credentials' });
         }
@@ -74,7 +74,7 @@ const loginUser = async (req, res) => {
 
         // Generate JWT token
         const token = jwt.sign({ 
-            id: user.id, 
+            userId: user.id, 
             role: user.role, 
             verified: user.isVerified 
         }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRATION });
