@@ -1,3 +1,7 @@
+const nodemailer = require('nodemailer');
+const dotenv = require('dotenv');
+dotenv.config();
+
 async function sendVerificationEmail(email, token) {
     try {
         const transporter = nodemailer.createTransport({
