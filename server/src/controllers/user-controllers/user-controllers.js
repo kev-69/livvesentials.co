@@ -72,32 +72,38 @@ const addUserAddress = async (req, res) => {
 const updateUserAddress = async (req, res) => {
     try {
         const userId = req.user.id; // Assuming you have user ID in req.user
+        const { addressId } = req.params; // Assuming addressId is passed as a URL parameter
         const { addressLine1, addressLine2, city, state, country } = req.body;
-    
+
         const user = await User.findByPk(userId, {
             include: [{ model: Address }], // Include the Address model
         });
-    
+
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
-    
-        const address = user.Address || await Address.create({ userId });
-    
-        address.addressLine1 = addressLine1 || address.addressLine1;
-        address.addressLine2 = addressLine2 || address.addressLine2;
-        address.city = city || address.city;
-        address.state = state || address.state;
-        address.country = country || address.country;
-    
+
+        const address = await Address.findByPk(addressId);
+
+        if (!address || address.userId !== userId) {
+            return res.status(404).json({ message: 'Address not found or does not belong to the user' });
+        }
+
+        // Update only the fields provided in the request body
+        if (addressLine1 !== undefined) address.addressLine1 = addressLine1;
+        if (addressLine2 !== undefined) address.addressLine2 = addressLine2;
+        if (city !== undefined) address.city = city;
+        if (state !== undefined) address.state = state;
+        if (country !== undefined) address.country = country;
+
         await address.save();
-    
-        return res.status(200).json({ message: 'User address updated successfully' });
+
+        return res.status(200).json({ message: 'User address updated successfully', address });
     } catch (error) {
         console.error('Error updating user address:', error);
         return res.status(500).json({ message: 'Internal server error' });
     }
-}
+};
 
 const deleteUserAddress = async (req, res) => {
     try {
