@@ -1,1 +1,1 @@
-// add to cart, remove from cart, get cart, update cart items, clear cart, checkout
+// add to cart, remove from cart, get cart, update cart items, clear cart, checkout, get order history, get order details, reorder, get order details by user id
