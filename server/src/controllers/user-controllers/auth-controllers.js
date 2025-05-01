@@ -6,18 +6,18 @@ dotenv.config();
 const User = require('../../models/user-model')
 
 // token generation utils
-const {
-    generateVerficationToken,
-    generatePasswordResetToken,
-    verifyEmailToken,
-    verifyPasswordResetToken
-} = require('../../utils/token-util')
+// const {
+//     generateVerficationToken,
+//     generatePasswordResetToken,
+//     verifyEmailToken,
+//     verifyPasswordResetToken
+// } = require('../../utils/token-util')
 
 // email verification utils
-const {
-    sendVerificationEmail,
-    sendPasswordResetEmail
-} = require('../../utils/emails-util')
+// const {
+//     sendVerificationEmail,
+//     sendPasswordResetEmail
+// } = require('../../utils/emails-util')
 
 const registerUser = async (req, res) => {
     const { firstName, lastName, email, password, phone } = req.body
@@ -41,10 +41,10 @@ const registerUser = async (req, res) => {
         });
 
         // Generate verification token
-        const verificationToken = generateVerficationToken(newUser.id);
+        // const verificationToken = generateVerficationToken(newUser.id);
 
         // Send verification email
-        await sendVerificationEmail(email, verificationToken);
+        // await sendVerificationEmail(email, verificationToken);
 
         res.status(201).json({
             message: 'User registered successfully. Please verify your email.',
@@ -98,97 +98,97 @@ const loginUser = async (req, res) => {
     }
 }
 
-const verifyEmail = async (req, res) => {
-    const { token } = req.params
-    try {
-        // Verify the token
-        const decoded = verifyEmailToken(token);
-        if (!decoded) {
-            return res.status(400).json({ message: 'Invalid or expired token' });
-        }
+// const verifyEmail = async (req, res) => {
+//     const { token } = req.params
+//     try {
+//         // Verify the token
+//         const decoded = verifyEmailToken(token);
+//         if (!decoded) {
+//             return res.status(400).json({ message: 'Invalid or expired token' });
+//         }
 
-        // Update user verification status
-        const updatedUser = await User.update(
-            { isVerified: true },
-            { where: { verificationToken: token } }
-        );
-        if (!updatedUser) {
-            return res.status(400).json({ message: 'Invalid token' });
-        }
+//         // Update user verification status
+//         const updatedUser = await User.update(
+//             { isVerified: true },
+//             { where: { verificationToken: token } }
+//         );
+//         if (!updatedUser) {
+//             return res.status(400).json({ message: 'Invalid token' });
+//         }
 
-        res.status(200).json({ message: 'Email verified successfully' })
-    } catch (error) {
-        console.error('Error verifying email:', error);
-        if(error.name === 'TokenExpiredError') {
-            return res.status(400).json({ message: 'Token expired' });
-        }
-        if(error.name === 'JsonWebTokenError') {
-            return res.status(400).json({ message: 'Invalid token' });
-        }
-        return res.status(500).json({ message: 'Internal server error' });
-    }
-}
+//         res.status(200).json({ message: 'Email verified successfully' })
+//     } catch (error) {
+//         console.error('Error verifying email:', error);
+//         if(error.name === 'TokenExpiredError') {
+//             return res.status(400).json({ message: 'Token expired' });
+//         }
+//         if(error.name === 'JsonWebTokenError') {
+//             return res.status(400).json({ message: 'Invalid token' });
+//         }
+//         return res.status(500).json({ message: 'Internal server error' });
+//     }
+// }
 
-const requestPasswordReset = async (req, res) => {
-    const { email } = req.body
-    try {
-        // Check if user exists
-        const user = await User.findByPk({ where: { email } });
-        if (!user) {
-            return res.status(400).json({ message: 'User not found' });
-        }
+// const requestPasswordReset = async (req, res) => {
+//     const { email } = req.body
+//     try {
+//         // Check if user exists
+//         const user = await User.findByPk({ where: { email } });
+//         if (!user) {
+//             return res.status(400).json({ message: 'User not found' });
+//         }
 
-        // Generate password reset token
-        const passwordResetToken = generatePasswordResetToken(user.id);
+//         // Generate password reset token
+//         const passwordResetToken = generatePasswordResetToken(user.id);
 
-        // Send password reset email
-        await sendPasswordResetEmail(email, passwordResetToken);
+//         // Send password reset email
+//         await sendPasswordResetEmail(email, passwordResetToken);
 
-        res.status(200).json({ message: 'Password reset email sent successfully' })
-    } catch (error) {
-        console.error('Error requesting password reset:', error);
-        return res.status(500).json({ message: 'Internal server error' });
-    }
-}
+//         res.status(200).json({ message: 'Password reset email sent successfully' })
+//     } catch (error) {
+//         console.error('Error requesting password reset:', error);
+//         return res.status(500).json({ message: 'Internal server error' });
+//     }
+// }
 
-const resetPassword = async (req, res) => {
-    const { token, newPassword } = req.body
-    try {
-        // Verify the token
-        const decoded = verifyPasswordResetToken(token);
-        if (!decoded) {
-            return res.status(400).json({ message: 'Invalid or expired token' });
-        }
+// const resetPassword = async (req, res) => {
+//     const { token, newPassword } = req.body
+//     try {
+//         // Verify the token
+//         const decoded = verifyPasswordResetToken(token);
+//         if (!decoded) {
+//             return res.status(400).json({ message: 'Invalid or expired token' });
+//         }
 
-        // Hash the new password
-        const hashedPassword = await bcrypt.hash(newPassword, 10);
+//         // Hash the new password
+//         const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-        // Update user password
-        const updatedUser = await User.update(
-            { password: hashedPassword },
-            { where: { id: decoded.userId } }
-        );
-        if (!updatedUser) {
-            return res.status(400).json({ message: 'Invalid token' });
-        }
+//         // Update user password
+//         const updatedUser = await User.update(
+//             { password: hashedPassword },
+//             { where: { id: decoded.userId } }
+//         );
+//         if (!updatedUser) {
+//             return res.status(400).json({ message: 'Invalid token' });
+//         }
 
-        res.status(200).json({ message: 'Password reset successfully' })
-    } catch (error) {
-        console.error('Error resetting password:', error);
-        if(error.name === 'TokenExpiredError') {
-            return res.status(400).json({ message: 'Token expired' });
-        }
-        if(error.name === 'JsonWebTokenError') {
-            return res.status(400).json({ message: 'Invalid token' });
-        }
-        return res.status(500).json({ message: 'Internal server error' });
-    }
-}
+//         res.status(200).json({ message: 'Password reset successfully' })
+//     } catch (error) {
+//         console.error('Error resetting password:', error);
+//         if(error.name === 'TokenExpiredError') {
+//             return res.status(400).json({ message: 'Token expired' });
+//         }
+//         if(error.name === 'JsonWebTokenError') {
+//             return res.status(400).json({ message: 'Invalid token' });
+//         }
+//         return res.status(500).json({ message: 'Internal server error' });
+//     }
+// }
 
 module.exports = {
     registerUser,
     loginUser,
-    verifyEmail,
-    requestPasswordReset,
-    resetPassword
+    // verifyEmail,
+    // requestPasswordReset,
+    // resetPassword
 }
