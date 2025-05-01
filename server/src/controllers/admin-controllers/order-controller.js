@@ -1,1 +1,1 @@
-// admin processing orders, updating order status, etc.
+// admin processing orders, updating order status, get all orders etc
