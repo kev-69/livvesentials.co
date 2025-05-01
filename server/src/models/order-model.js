@@ -1,7 +1,7 @@
-const sequeliae = require('../config/db');
+const sequelize = require('../config/db');
 const { DataTypes } = require('sequelize');
 
-const Order = sequeliae.define('Order', {
+const Order = sequelize.define('Order', {
     id: {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
